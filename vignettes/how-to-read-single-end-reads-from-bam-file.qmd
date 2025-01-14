@@ -1,0 +1,101 @@
+---
+title: How to read single-end reads from a BAM file
+author: Bioconductor Core Team
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{How to read single-end reads from a BAM file}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+    opts_chunk: 
+        collapse: true
+        comment: '#>'
+format:
+    html:
+        toc: true
+        html-math-method: mathjax
+---
+
+```{r}
+#| echo: false
+
+suppressPackageStartupMessages({
+    library(BiocStyle)
+})
+```
+
+This HowTo has been adapted from the list of HowTos provided in the 
+[vignette](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf)
+for the `r Biocpkg("GenomicRanges")` Bioconductor package. 
+
+# Bioconductor packages used in this document
+
+* `r Biocpkg("pasillaBamSubset")`
+* `r Biocpkg("GenomicAlignments")`
+* `r Biocpkg("Rsamtools")`
+
+# How to read single-end reads from a BAM file
+
+For illustration, we use data from the `pasillaBamSubset` data package.
+
+```{r}
+suppressPackageStartupMessages({
+    library(pasillaBamSubset)
+})
+# Path to a bam file with single-end reads
+(un1 <- untreated1_chr4())
+```
+
+Several functions are available for reading BAM files into R:
+
+* `GenomicAlignments::readGAlignments()`
+* `GenomicAlignments::readGAlignmentPairs()`
+* `GenomicAlignments::readGAlignmentsList()`
+* `Rsamtools::scanBam()`
+
+`scanBam` is a low-level function that returns a list of lists and is not 
+discussed further here. See `?scanBam` in the `Rsamtools` package for more 
+information. Single-end reads can be read with the `readGAlignments` 
+function from the `GenomicAlignments` package.
+
+```{r}
+suppressPackageStartupMessages({
+    library(GenomicAlignments)
+})
+gal <- readGAlignments(un1)
+class(gal)
+gal
+```
+
+Data subsets can be specified by genomic position, field names, or flag 
+criteria using `Rsamtools::ScanBamParam`. Here, as an example we import records 
+that overlap position 1 to 5000 on the negative strand of chromosome 4, with 
+`flag` and `cigar` as metadata columns.
+
+```{r}
+suppressPackageStartupMessages({
+    library(Rsamtools)
+})
+what <- c("flag", "cigar")
+which <- GRanges("chr4", IRanges(1, 5000))
+flag <- scanBamFlag(isMinusStrand = TRUE)
+param <- ScanBamParam(which = which, what = what, flag = flag)
+neg <- readGAlignments(un1, param = param)
+neg
+```
+
+Another approach to subsetting the data is to use `Rsamtools::filterBam`. 
+This function creates a new BAM file of records passing user-defined criteria. 
+See `?filterBam` in the `Rsamtools` package for more information.
+
+# Session info
+
+<details>
+<summary><b>
+Click to display session info
+</b></summary>
+```{r}
+sessionInfo()
+```
+</details>
+
