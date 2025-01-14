@@ -25,6 +25,7 @@ RoxygenNote: 7.3.2
 VignetteBuilder: 
     quarto
 Imports: 
+    quarto,
     BiocStyle,
     GenomicAlignments,
     pasillaBamSubset
