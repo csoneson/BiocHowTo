@@ -38,6 +38,9 @@ jobs:
         with:
           bioc-version: ${{ matrix.config.bioc }}
 
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
       - name: Install remotes and rmarkdown
         run: |
           install.packages(c('remotes', 'rmarkdown'))
