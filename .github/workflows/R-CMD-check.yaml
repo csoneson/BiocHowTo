@@ -41,6 +41,10 @@ jobs:
       - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      - name: Install pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+        if: matrix.config.image == null
+
       - name: Install remotes and rmarkdown
         run: |
           install.packages(c('remotes', 'rmarkdown'))
