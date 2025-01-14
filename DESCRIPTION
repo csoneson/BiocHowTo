@@ -1,0 +1,26 @@
+Package: BiocHowTo
+Type: Package
+Title: A Collection of How To Documents For Bioconductor
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Charlotte", "Soneson",
+      email = "charlottesoneson@gmail.com",
+      role = c("aut", "cre")
+    )
+  )
+Description: This package provides a crowd-sourced collection of 'How To' 
+    documents related to Bioconductor packages.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: false
+Suggests: 
+    knitr,
+    rmarkdown
+RoxygenNote: 7.3.2
+VignetteBuilder: 
+    quarto
+Imports: 
+    BiocStyle,
+    GenomicAlignments,
+    pasillaBamSubset
