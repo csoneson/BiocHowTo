@@ -1,0 +1,126 @@
+on:
+  push:
+  pull_request:
+    branches:
+      - devel
+      - main
+  schedule:
+    - cron: '0 9 * * 2'
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    container: ${{ matrix.config.image }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.bioc }} - ${{ matrix.config.image }} - ${{ matrix.config.pandoc }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {os: macOS-latest, bioc: 'devel'}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      CRAN: ${{ matrix.config.cran }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Set up R and install BiocManager
+        uses: grimbough/bioc-actions/setup-bioc@v1
+        if: matrix.config.image == null
+        with:
+          bioc-version: ${{ matrix.config.bioc }}
+
+      - name: Install remotes and rmarkdown
+        run: |
+          install.packages(c('remotes', 'rmarkdown'))
+        shell: Rscript {0}
+
+      - name: Query dependencies
+        run: |
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE, repos = c(getOption('repos'), BiocManager::repositories())), 'depends.Rds', version = 2)
+        shell: Rscript {0}
+
+      - name: Cache R packages
+        if: runner.os != 'Windows' && matrix.config.image == null
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-bioc-${{ matrix.config.bioc }}-${{ hashFiles('depends.Rds') }}
+          restore-keys: ${{ runner.os }}-bioc-${{ matrix.config.bioc }}-
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          pak-version: devel
+
+      - name: Install system dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install harfbuzz
+          brew install fribidi
+
+      - name: Install dependencies
+        run: |
+          local_deps <- remotes::local_package_deps(dependencies = TRUE)
+          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
+          BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]], Ncpu = 2L)
+          remotes::install_cran('rcmdcheck', Ncpu = 2L)
+        shell: Rscript {0}
+
+      - name: Session info
+        run: |
+          options(width = 100)
+          pkgs <- installed.packages()[, "Package"]
+          sessioninfo::session_info(pkgs, include_base = TRUE)
+        shell: Rscript {0}
+
+      - name: Build, Install, Check
+        id: build-install-check
+        uses: grimbough/bioc-actions/build-install-check@v1
+
+      - name: Upload install log if the build/install/check step fails
+        if: always() && (steps.build-install-check.outcome == 'failure')
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-log
+          path: |
+            ${{ steps.build-install-check.outputs.install-log }}
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-bioc-${{ matrix.config.bioc }}-results
+          path: ${{ steps.build-install-check.outputs.check-dir }}
+
+      # - name: Run BiocCheck
+      #   uses: grimbough/bioc-actions/run-BiocCheck@v1
+      #   with:
+      #     arguments: '--no-check-bioc-views --no-check-bioc-help'
+      #     error-on: 'error'
+      #
+      # - name: Test coverage
+      #   if: matrix.config.os == 'macOS-latest' && matrix.config.pandoc == null
+      #   run: |
+      #     install.packages("covr")
+      #     covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
+      #   shell: Rscript {0}
+      #
+      - name: Deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/devel' && matrix.config.os == 'macOS-latest'
+        run: |
+          R CMD INSTALL .
+          Rscript -e "remotes::install_dev('pkgdown'); pkgdown::deploy_to_branch(new_process = FALSE)"
+
