@@ -9,7 +9,31 @@ Authors@R: c(
         role = c("aut", "cre")
     ),
     person(
-        "Bioconductor Core Team", "",
+        "Hervé", "Pagès",
+        role = "aut"
+    ),
+    person(
+        "Dan", "Tenenbaum",
+        role = "aut"
+    ),
+    person(
+        "Valerie", "Obenchain",
+        role = "aut"
+    ),
+    person(
+        "Marc", "Carlson",
+        role = "aut"
+    ),
+    person(
+        "Martin", "Morgan",
+        role = "aut"
+    ),
+    person(
+        "James", "Hester",
+        role = "aut"
+    ),
+    person(
+        "Vince", "Carey",
         role = "aut"
     )
   )
