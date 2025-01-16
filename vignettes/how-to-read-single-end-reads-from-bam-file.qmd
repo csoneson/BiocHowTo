@@ -36,7 +36,8 @@ for the `r Biocpkg("GenomicRanges")` Bioconductor package.
 
 # How to read single-end reads from a BAM file
 
-For illustration, we use data from the `pasillaBamSubset` data package.
+For illustration, we use data from the `r Biocpkg("pasillaBamSubset")` data 
+package.
 
 ```{r}
 suppressPackageStartupMessages({
@@ -54,9 +55,9 @@ Several functions are available for reading BAM files into R:
 * `Rsamtools::scanBam()`
 
 `scanBam` is a low-level function that returns a list of lists and is not 
-discussed further here. See `?scanBam` in the `Rsamtools` package for more 
-information. Single-end reads can be read with the `readGAlignments` 
-function from the `GenomicAlignments` package.
+discussed further here. See `?scanBam` in the `r Biocpkg("Rsamtools")` package 
+for more information. Single-end reads can be read with the `readGAlignments` 
+function from the `r Biocpkg("GenomicAlignments")` package.
 
 ```{r}
 suppressPackageStartupMessages({
@@ -86,7 +87,7 @@ neg
 
 Another approach to subsetting the data is to use `Rsamtools::filterBam`. 
 This function creates a new BAM file of records passing user-defined criteria. 
-See `?filterBam` in the `Rsamtools` package for more information.
+See `?filterBam` in the `r Biopkg("Rsamtools")` package for more information.
 
 # Session info
 
