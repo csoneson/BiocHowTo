@@ -32,12 +32,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/how-to-read-single-end-reads-from-bam-file.html">How to read single-end reads from a BAM file</a></li>
-  </ul>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -75,7 +70,7 @@
 <li><em><a href="https://bioconductor.org/packages/3.21/Rsamtools" class="external-link">Rsamtools</a></em></li>
 </ul></section><section class="section level2"><h2 id="how-to-read-single-end-reads-from-a-bam-file">How to read single-end reads from a BAM file<a class="anchor" aria-label="anchor" href="#how-to-read-single-end-reads-from-a-bam-file"></a>
 </h2>
-<p>For illustration, we use data from the <code>pasillaBamSubset</code> data package.</p>
+<p>For illustration, we use data from the <em><a href="https://bioconductor.org/packages/3.21/pasillaBamSubset" class="external-link">pasillaBamSubset</a></em> data package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -92,7 +87,7 @@
 <li><code><a href="https://rdrr.io/pkg/GenomicAlignments/man/readGAlignments.html" class="external-link">GenomicAlignments::readGAlignmentsList()</a></code></li>
 <li><code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">Rsamtools::scanBam()</a></code></li>
 </ul>
-<p><code>scanBam</code> is a low-level function that returns a list of lists and is not discussed further here. See <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">?scanBam</a></code> in the <code>Rsamtools</code> package for more information. Single-end reads can be read with the <code>readGAlignments</code> function from the <code>GenomicAlignments</code> package.</p>
+<p><code>scanBam</code> is a low-level function that returns a list of lists and is not discussed further here. See <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">?scanBam</a></code> in the <em><a href="https://bioconductor.org/packages/3.21/Rsamtools" class="external-link">Rsamtools</a></em> package for more information. Single-end reads can be read with the <code>readGAlignments</code> function from the <em><a href="https://bioconductor.org/packages/3.21/GenomicAlignments" class="external-link">GenomicAlignments</a></em> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -176,7 +171,7 @@
 <span><span class="co">#&gt;   -------</span></span>
 <span><span class="co">#&gt;   seqinfo: 8 sequences from an unspecified genome</span></span></code></pre></div>
 </div>
-<p>Another approach to subsetting the data is to use <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">Rsamtools::filterBam</a></code>. This function creates a new BAM file of records passing user-defined criteria. See <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">?filterBam</a></code> in the <code>Rsamtools</code> package for more information.</p>
+<p>Another approach to subsetting the data is to use <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">Rsamtools::filterBam</a></code>. This function creates a new BAM file of records passing user-defined criteria. See <code><a href="https://rdrr.io/pkg/Rsamtools/man/scanBam.html" class="external-link">?filterBam</a></code> in the <em><a href="https://bioconductor.org/packages/3.21/Rsamtools" class="external-link">Rsamtools</a></em> package for more information.</p>
 </section><section class="section level2"><h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <details><summary><b> Click to display session info </b>
