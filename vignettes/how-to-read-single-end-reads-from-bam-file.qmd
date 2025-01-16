@@ -87,7 +87,7 @@ neg
 
 Another approach to subsetting the data is to use `Rsamtools::filterBam`. 
 This function creates a new BAM file of records passing user-defined criteria. 
-See `?filterBam` in the `r Biopkg("Rsamtools")` package for more information.
+See `?filterBam` in the `r Biocpkg("Rsamtools")` package for more information.
 
 # Session info
 
