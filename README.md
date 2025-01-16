@@ -21,7 +21,9 @@ package, e.g. using
 usethis::use_package("new_dependency")
 ```
 
-6. Push the changes to your forked repository and open a pull request to 
+6. Add the new vignette to a suitable section under 'Articles' in the 
+`_pkgdown.yml` file.
+7. Push the changes to your forked repository and open a pull request to 
 the `devel` branch of the parent repository.
 
 ## How to suggest a new topic
