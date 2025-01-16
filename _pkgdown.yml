@@ -1,3 +1,8 @@
 url: https://csoneson.github.io/BiocHowTo/
 template:
   bootstrap: 5
+
+articles:
+- title: How To Documents
+  contents:
+  - how-to-read-single-end-reads-from-bam-file
