@@ -1,0 +1,102 @@
+---
+title: How to read paired-end reads from a BAM file
+author: Bioconductor Core Team
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{How to read paired-end reads from a BAM file}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+    opts_chunk: 
+        collapse: true
+        comment: '#>'
+format:
+    html:
+        toc: true
+        html-math-method: mathjax
+---
+
+```{r}
+#| echo: false
+
+suppressPackageStartupMessages({
+    library(BiocStyle)
+})
+```
+
+This HowTo has been adapted from the list of HowTos provided in the 
+[vignette](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf)
+for the `r Biocpkg("GenomicRanges")` Bioconductor package. 
+
+# Bioconductor packages used in this document
+
+* `r Biocpkg("pasillaBamSubset")`
+* `r Biocpkg("GenomicAlignments")`
+
+# How to read paired-end reads from a BAM file
+
+For illustration, we use data from the `r Biocpkg("pasillaBamSubset")` data 
+package.
+
+```{r}
+suppressPackageStartupMessages({
+    library(pasillaBamSubset)
+})
+# Path to a bam file with paired-end reads
+(un3 <- untreated3_chr4())
+```
+
+Paired-end reads can be loaded with the `GenomicAlignments::readGAlignmentPairs` 
+or `GenomicAlignments::readGAlignmentsList` functions from the 
+`r Biocpkg("GenomicAlignments")` package. These functions use the same mate 
+pairing algorithm but output different objects.
+
+Let's start with `GenomicAlignments::readGAlignmentPairs`:
+
+```{r}
+suppressPackageStartupMessages({
+    library(GenomicAlignments)
+})
+gapairs <- readGAlignmentPairs(un3)
+class(gapairs)
+gapairs
+```
+
+The `GAlignmentPairs` class holds only pairs; reads with no mate or with 
+ambiguous pairing are discarded. Each list element holds exactly 2 records 
+(a mated pair). Records can be accessed as the first and last segments in a 
+template or as left and right alignments. See `?GAlignmentPairs` in the 
+`r Biocpkg("GenomicAlignments")` package for more information.
+
+For `readGAlignmentsList`, mate pairing is performed when `asMates` is set to 
+`TRUE` on the `BamFile` object, otherwise records are treated as single-end.
+
+```{r}
+galist <- readGAlignmentsList(BamFile(un3, asMates = TRUE))
+galist
+```
+
+`GAlignmentsList` is a more general ‘list-like’ structure that holds mate 
+pairs as well as nonmates (i.e., singletons, records with unmapped mates etc). 
+A `mates_status` metadata column (accessed with `mcols`) indicates which 
+records were paired.
+
+Non-mated reads are returned as groups by `QNAME` and contain any number of 
+records. Here the non-mate groups range in size from 1 to 9.
+
+```{r}
+non_mates <- galist[unlist(mcols(galist)$mate_status) == "unmated"]
+table(elementNROWS(non_mates))
+```
+
+# Session info
+
+<details>
+<summary><b>
+Click to display session info
+</b></summary>
+```{r}
+sessionInfo()
+```
+</details>
+
