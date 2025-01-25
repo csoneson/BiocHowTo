@@ -1,0 +1,91 @@
+---
+title: How to read a BAM file in chunks
+author: Bioconductor Core Team
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{How to read a BAM file in chunks}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+    opts_chunk: 
+        collapse: true
+        comment: '#>'
+format:
+    html:
+        toc: true
+        html-math-method: mathjax
+---
+
+```{r}
+#| echo: false
+
+suppressPackageStartupMessages({
+    library(BiocStyle)
+})
+```
+
+This HowTo has been adapted from the list of HowTos provided in the 
+[vignette](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf)
+for the `r Biocpkg("GenomicRanges")` Bioconductor package. 
+
+# Bioconductor packages used in this document
+
+* `r Biocpkg("pasillaBamSubset")`
+* `r Biocpkg("GenomicAlignments")`
+* `r Biocpkg("Rsamtools")`
+
+# How to read a BAM file in chunks
+
+A large BAM file can be iterated through in chunks, in order to reduce the 
+memory usage, by setting a `yieldSize` for the `BamFile` object. For 
+illustration, we use data from the `r Biocpkg("pasillaBamSubset")` data package.
+
+```{r}
+suppressPackageStartupMessages({
+    library(pasillaBamSubset)
+    library(Rsamtools)
+})
+# Path to a bam file with single-end reads
+(un1 <- untreated1_chr4())
+bf <- BamFile(un1, yieldSize = 100000)
+```
+
+Iteration through a BAM file requires that the file be opened, repeatedly 
+queried inside a loop, then closed. Repeated calls to 
+`GenomicAlignments::readGAlignments` without opening the file first result in
+the same 100000 records returned each time (with a `yieldSize` of 100000).
+As an example, let's calculate the coverage for the bam file above.
+
+```{r}
+suppressPackageStartupMessages({
+    library(GenomicAlignments)
+})
+open(bf)
+cvg <- NULL
+repeat {
+    chunk <- readGAlignments(bf)
+    if (length(chunk) == 0L) {
+        break
+    }
+    chunk_cvg <- coverage(chunk)
+    if (is.null(cvg)) {
+        cvg <- chunk_cvg
+    } else {
+        cvg <- cvg + chunk_cvg
+    }
+}
+close(bf)
+cvg
+```
+
+# Session info
+
+<details>
+<summary><b>
+Click to display session info
+</b></summary>
+```{r}
+sessionInfo()
+```
+</details>
+
