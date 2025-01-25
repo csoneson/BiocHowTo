@@ -2,8 +2,10 @@ pandoc: 3.1.11
 pkgdown: 2.1.1.9000
 pkgdown_sha: 6615322cb2ce15b1effcecf894123c88fa10b9c9
 articles:
+  how-to-read-big-bam-file-in-chunks: how-to-read-big-bam-file-in-chunks.html
+  how-to-read-paired-end-reads-from-bam-file: how-to-read-paired-end-reads-from-bam-file.html
   how-to-read-single-end-reads-from-bam-file: how-to-read-single-end-reads-from-bam-file.html
-last_built: 2025-01-16T19:33Z
+last_built: 2025-01-25T18:51Z
 urls:
   reference: https://csoneson.github.io/BiocHowTo/reference
   article: https://csoneson.github.io/BiocHowTo/articles
